@@ -1,0 +1,7 @@
+body{
+  margin: 0;
+  background-image: linear-gradient(to bottom, #ffffff, #f5bfe1);
+}
+.wrapper{
+  min-height: calc(100vh - 40px);
+}
