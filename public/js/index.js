@@ -18,25 +18,34 @@ form.addEventListener('submit', function(event) {
   }
   else {
       window.location.replace('#outputDiv'); // scroll to output div
-
       outputDiv.innerHTML='<div class="loader d-block mt-5 mx-auto"></div>'; //display loader until result is fetched
 
       // HTTP request to get list of top n repositories of the organization based on number of forks
       axios.get('https://api.github.com/search/repositories?q=org:'+orgName+'&sort=forks&per_page='+nValue)
       .then(async function (response) {
-
+        let isError=false;
         var orgRepos = []; // array to store repositories list
         let i = 0;
         for(let data of response.data.items){
           orgRepos[i] = {};
           orgRepos[i].repoName = data.name;
           orgRepos[i].forksCount = data.forks;
-          orgRepos[i].committesList = [];
-          orgRepos[i].committesList = await getCommittees(data.full_name, mValue); // get list of top m committes
+          orgRepos[i].committeesList = [];
+          try{
+            orgRepos[i].committeesList = await getCommittees(data.full_name, mValue); // get list of top m committees
+          }
+          catch(err){
+            isError=true;
+            break;
+          }
           i++;
         }
-
-        constructOutput(orgRepos, orgName); // Construct inner HTML of output div
+        if(isError==false)
+          constructOutput(orgRepos, orgName); // Construct inner HTML of output div
+        else{
+          alert("Oops! An error occurred");
+          location.reload();
+        }
 
       })
       .catch(function (error) {
@@ -54,26 +63,25 @@ form.addEventListener('submit', function(event) {
 });
 
 
-// function to get the list of committes of the given repository
+// function to get the list of committees of the given repository
 function getCommittees(repoName, perPage){
-  let committesList = []; // array to store committes list
+  let committeesList = []; // array to store committees list
 
-  //HTTP request to get top m committes of the given repository
+  //HTTP request to get top m committees of the given repository
   return axios.get('https://api.github.com/repos/' +repoName + '/contributors?per_page=' + perPage)
   .then(function (response) {
     let i = 0;
     for(let data of response.data){
-      committesList[i] = {};
-      committesList[i].committeeName = data.login;
-      committesList[i].commitsCount = data.contributions;
+      committeesList[i] = {};
+      committeesList[i].committeeName = data.login;
+      committeesList[i].commitsCount = data.contributions;
       i++;
     }
-    return committesList;
+    return committeesList;
   })
   .catch(function (error) {
     console.log(error);
-    alert("Oops! An error occurred");
-    location.reload();
+    throw new Error("Error occured");
   });
 }
 
@@ -92,7 +100,7 @@ function constructOutput(orgRepos, orgName){
         <div class="card-body">
           <h5 class="card-title">`+ repo.repoName +`</h5>
           <h6 class="card-subtitle mb-2 text-muted">`+ repo.forksCount +` forks</h6>
-          <h6 class="text-center mt-2">Top committes</h6>
+          <h6 class="text-center mt-2">Top committees</h6>
           <table class="table table-sm table-striped table-hover">
             <thead>
               <tr>
@@ -106,7 +114,7 @@ function constructOutput(orgRepos, orgName){
             let card = ""; // Build cards containing output
             let j = 1;
             // iterate committees list of each repository
-            for(let committee of repo.committesList){
+            for(let committee of repo.committeesList){
               card += `<tr><td>` + j + `</td><td>` + committee.committeeName + `</td><td>` + committee.commitsCount + `</td></tr>`;
               j++;
             }
