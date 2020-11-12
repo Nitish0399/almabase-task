@@ -9,14 +9,25 @@ form.addEventListener('submit', function(event) {
   // }
   // else {
       axios.get('https://api.github.com/search/repositories?q=org:'+orgName+'&sort=forks&per_page='+nValue)
-      .then(function (response) {
-        var arr = response.data.items;
-        var ans="";
-        for(var item of arr){
-          ans+=item.full_name+" "+item.forks+"<br>";
+      .then(async function (response) {
+
+        var orgRepos=[];
+
+        let i=0;
+        for(var item of response.data.items){
+          orgRepos[i]={};
+          orgRepos[i].full_name=item.full_name;
+          orgRepos[i].forks=item.forks;
+          orgRepos[i].contributors=[];
+          orgRepos[i].contributors = await getContributors(item.full_name, mValue);
+          i++;
+        }
+
+        let ans="";
+        for(var item of orgRepos){
+          ans+=item.full_name+" "+item.forks+" "+item.contributors+"<br>";
         }
         result.innerHTML=ans;
-        console.log(response.data.items);
       })
       .catch(function (error) {
         console.log(error);
@@ -27,3 +38,19 @@ form.addEventListener('submit', function(event) {
 });
 //https://api.github.com/search/repositories?q=org:google&sort=forks&per_page=100
 //https://api.github.com/repos/google/dopamine/contributors
+
+function getContributors(repoName, perPage){
+  let array=[];
+  return axios.get('https://api.github.com/repos/' +repoName + '/contributors?per_page=' + perPage)
+  .then(function (res) {
+    let j=0;
+    for(var item of res.data){
+      array[j]=item.login;
+      j++;
+    }
+    return array;
+  })
+  .catch(function (err) {
+    console.log(err);
+  });
+}

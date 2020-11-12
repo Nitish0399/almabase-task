@@ -13,46 +13,76 @@
   <body>
     <div class="wrapper container py-2">
       <h2 class="text-center">Almabase Software Engineering Internship (6 months) Internship Task</h2>
-      <div class="row">
-        <form id="form" class="needs-validation col-12 col-md-6 mt-5" novalidate>
-          <div class="form-row">
-            <div class="d-block mx-auto">
-              <label for="orgName">Enter Organization Name</label>
-              <input type="text" class="form-control" id="orgName" required>
-              <div class="invalid-feedback">
-                Please fill this field
+      <form id="form" class="needs-validation mt-5" novalidate>
+        <div class="form-row">
+          <div class="d-block mx-auto">
+            <label for="orgName">Enter Organization Name</label>
+            <input type="text" class="form-control" id="orgName" required>
+            <div class="invalid-feedback">
+              Please fill this field
+            </div>
+          </div>
+        </div>
+        <div class="form-row mt-2">
+          <div class="d-block mx-auto">
+            <label for="nValue">Enter n value</label>
+            <input type="number" class="form-control" id="nValue" required>
+            <div class="invalid-feedback">
+              Enter a proper value
+            </div>
+          </div>
+        </div>
+        <div class="form-row mt-2">
+          <div class="d-block mx-auto">
+            <label for="mValue">Enter m value</label>
+            <input type="number" class="form-control" id="mValue" required>
+            <div class="invalid-feedback">
+              Enter a proper value
+            </div>
+          </div>
+        </div>
+        <button class="btn btn-danger d-block mx-auto mt-3" type="submit">Search</button>
+      </form>
+      <div class="">
+        <p class="h4 mt-5 pb-2 text-center text-muted border-secondary border-bottom">RESULT<p>
+        <div id="result">
+          <p class="h4 my-3">Organization : <b>Google</b></p>
+          <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3">
+            <div class="card">
+              <div class="card-body">
+                <h5 class="card-title">Google Maps</h5>
+                <h6 class="card-subtitle mb-2 text-muted">1243 forks</h6>
+                <h6 class="text-center mt-2">Top committes</h6>
+                <table class="table table-sm table-striped table-hover">
+                  <thead>
+                    <tr>
+                      <th scope="col">#</th>
+                      <th scope="col">Committee</th>
+                      <th scope="col">Commit count</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>1</td>
+                      <td>Mark</td>
+                      <td>56</td>
+                    </tr>
+                    <tr>
+                      <td>1</td>
+                      <td>Mark</td>
+                      <td>34</td>
+                    </tr>
+                  </tbody>
+                </table>
               </div>
             </div>
           </div>
-          <div class="form-row mt-2">
-            <div class="d-block mx-auto">
-              <label for="nValue">Enter n value</label>
-              <input type="number" class="form-control" id="nValue" required>
-              <div class="invalid-feedback">
-                Enter a proper value
-              </div>
-            </div>
-          </div>
-          <div class="form-row mt-2">
-            <div class="d-block mx-auto">
-              <label for="mValue">Enter m value</label>
-              <input type="number" class="form-control" id="mValue" required>
-              <div class="invalid-feedback">
-                Enter a proper value
-              </div>
-            </div>
-          </div>
-          <button class="btn btn-danger d-block mx-auto mt-3" type="submit">Search</button>
-        </form>
-        <div class="col-12 col-md-6">
-          <p class="h4 mt-5 text-center">RESULT<p>
-          <p id="result"></p>
         </div>
       </div>
     </div>
 
-    <footer>
-      <p class="text-center">Done By: G Nitish</p>
+    <footer class="pt-3 my-3 border-secondary border-top">
+      <p class="h6 text-center">Done By: G Nitish</p>
     </footer>
 
     <!-- Option 1: jQuery and Bootstrap Bundle (includes Popper) -->
