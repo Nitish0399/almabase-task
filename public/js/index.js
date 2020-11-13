@@ -143,5 +143,3 @@ function constructOutput(orgRepos, orgName){
   output += `</div>`;
   outputDiv.innerHTML = output;
 }
-
-//387d82e9dc30939c3ee6
