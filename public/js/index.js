@@ -29,7 +29,7 @@ form.addEventListener('submit', function(event) {
       axios.get('https://api.github.com/search/repositories?q=org:'+orgName+'&sort=forks&per_page='+nValue,
       {
         headers: {
-          Authorization: 'token '+'c74c940a0b4343cda10dbf02e690ecad76c6ebdb'
+          Authorization: 'token '+'fdcf323e3f9b72e5c53dcd552f5e744746ca8ce9'
         }
       })
       .then(async function (response) {
@@ -81,7 +81,7 @@ function getCommittees(repoName, perPage){
   return axios.get('https://api.github.com/repos/' +repoName + '/contributors?per_page=' + perPage,
   {
     headers: {
-      Authorization: 'token '+'c74c940a0b4343cda10dbf02e690ecad76c6ebdb'
+      Authorization: 'token '+'fdcf323e3f9b72e5c53dcd552f5e744746ca8ce9'
     }
   })
   .then(function (response) {
