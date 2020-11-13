@@ -18,10 +18,20 @@ form.addEventListener('submit', function(event) {
   }
   else {
       window.location.replace('#outputDiv'); // scroll to output div
-      outputDiv.innerHTML='<div class="loader d-block mt-5 mx-auto"></div>'; //display loader until result is fetched
+      if(nValue>=50){
+        outputDiv.innerHTML='<p class="text-center mt-2">Hold on, it takes some time to process such huge request!</p><div class="loader d-block mt-5 mx-auto"></div>'; //display loader until result is fetched
+      }
+      else{
+        outputDiv.innerHTML='<div class="loader d-block mt-5 mx-auto"></div>'; //display loader until result is fetched
+      }
 
       // HTTP request to get list of top n repositories of the organization based on number of forks
-      axios.get('https://api.github.com/search/repositories?q=org:'+orgName+'&sort=forks&per_page='+nValue)
+      axios.get('https://api.github.com/search/repositories?q=org:'+orgName+'&sort=forks&per_page='+nValue,
+      {
+        headers: {
+          Authorization: 'token '+'c74c940a0b4343cda10dbf02e690ecad76c6ebdb'
+        }
+      })
       .then(async function (response) {
         let isError=false;
         var orgRepos = []; // array to store repositories list
@@ -68,7 +78,12 @@ function getCommittees(repoName, perPage){
   let committeesList = []; // array to store committees list
 
   //HTTP request to get top m committees of the given repository
-  return axios.get('https://api.github.com/repos/' +repoName + '/contributors?per_page=' + perPage)
+  return axios.get('https://api.github.com/repos/' +repoName + '/contributors?per_page=' + perPage,
+  {
+    headers: {
+      Authorization: 'token '+'c74c940a0b4343cda10dbf02e690ecad76c6ebdb'
+    }
+  })
   .then(function (response) {
     let i = 0;
     for(let data of response.data){
@@ -128,3 +143,5 @@ function constructOutput(orgRepos, orgName){
   output += `</div>`;
   outputDiv.innerHTML = output;
 }
+
+//387d82e9dc30939c3ee6
