@@ -104,7 +104,7 @@ function getCommittees(repoName, perPage){
 // function to construct result output
 function constructOutput(orgRepos, orgName){
   var output =
-   `<p class="h4 mt-5 pb-2 text-center text-muted border-secondary border-bottom">RESULT<p>
+   `<p class="h4 mt-5 pb-2 text-center text-muted border-secondary border-bottom">RESULT</p>
     <p class="h4 my-3">Organization : <b>`+ orgName + `</b></p>
     <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3">`;
 
