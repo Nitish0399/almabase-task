@@ -19,55 +19,51 @@ form.addEventListener('submit', function(event) {
   else {
       window.location.replace('#outputDiv'); // scroll to output div
       if(nValue>=50){
-        outputDiv.innerHTML='<p class="text-center mt-2">Hold on, it takes some time to process such huge request!</p><div class="loader d-block mt-5 mx-auto"></div>'; //display loader until result is fetched
+        outputDiv.innerHTML='<p class="text-center mt-2">It requires authentication to Github to process such huge request. <br> The current rate limit is 60 requests per hour.</p>';
       }
       else{
         outputDiv.innerHTML='<div class="loader d-block mt-5 mx-auto"></div>'; //display loader until result is fetched
-      }
 
-      // HTTP request to get list of top n repositories of the organization based on number of forks
-      axios.get('https://api.github.com/search/repositories?q=org:'+orgName+'&sort=forks&per_page='+nValue,
-      {
-        headers: {
-          Authorization: 'token '+'fdcf323e3f9b72e5c53dcd552f5e744746ca8ce9'
-        }
-      })
-      .then(async function (response) {
-        let isError=false;
-        var orgRepos = []; // array to store repositories list
-        let i = 0;
-        for(let data of response.data.items){
-          orgRepos[i] = {};
-          orgRepos[i].repoName = data.name;
-          orgRepos[i].forksCount = data.forks;
-          orgRepos[i].committeesList = [];
-          try{
-            orgRepos[i].committeesList = await getCommittees(data.full_name, mValue); // get list of top m committees
+
+        // HTTP request to get list of top n repositories of the organization based on number of forks
+        axios.get('https://api.github.com/search/repositories?q=org:'+orgName+'&sort=forks&per_page='+nValue)
+        .then(async function (response) {
+          let isError=false;
+          var orgRepos = []; // array to store repositories list
+          let i = 0;
+          for(let data of response.data.items){
+            orgRepos[i] = {};
+            orgRepos[i].repoName = data.name;
+            orgRepos[i].forksCount = data.forks;
+            orgRepos[i].committeesList = [];
+            try{
+              orgRepos[i].committeesList = await getCommittees(data.full_name, mValue); // get list of top m committees
+            }
+            catch(err){
+              isError=true;
+              break;
+            }
+            i++;
           }
-          catch(err){
-            isError=true;
-            break;
+          if(isError==false)
+            constructOutput(orgRepos, orgName); // Construct inner HTML of output div
+          else{
+            alert("Oops! An error occurred");
+            location.reload();
           }
-          i++;
-        }
-        if(isError==false)
-          constructOutput(orgRepos, orgName); // Construct inner HTML of output div
-        else{
-          alert("Oops! An error occurred");
+
+        })
+        .catch(function (error) {
+          console.log(error);
+          if(error.response.data.message == "Validation Failed"){ // if invalid organization name is given, give alert
+            alert('"' + orgName + '" organization does not exist');
+          }
+          else{
+            alert("Oops! An error occurred");
+          }
           location.reload();
-        }
-
-      })
-      .catch(function (error) {
-        console.log(error);
-        if(error.response.data.message == "Validation Failed"){ // if invalid organization name is given, give alert
-          alert('"' + orgName + '" organization does not exist');
-        }
-        else{
-          alert("Oops! An error occurred");
-        }
-        location.reload();
-      });
+        });
+      }
   }
   event.preventDefault();
 });
@@ -78,12 +74,7 @@ function getCommittees(repoName, perPage){
   let committeesList = []; // array to store committees list
 
   //HTTP request to get top m committees of the given repository
-  return axios.get('https://api.github.com/repos/' +repoName + '/contributors?per_page=' + perPage,
-  {
-    headers: {
-      Authorization: 'token '+'fdcf323e3f9b72e5c53dcd552f5e744746ca8ce9'
-    }
-  })
+  return axios.get('https://api.github.com/repos/' +repoName + '/contributors?per_page=' + perPage)
   .then(function (response) {
     let i = 0;
     for(let data of response.data){
